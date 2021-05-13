@@ -1,0 +1,7 @@
+---
+kubeProxyReplacement: "strict"
+loadBalancer.algorithm: "{{ cilium_lb_algorithm }}"
+loadBalancer.mode: "{{ cilium_lb_mode }}"
+k8sServiceHost: "{{ kube_apiserver_advertise_address }}"
+k8sServicePort: "{{ kube_apiserver_bind_port }}"
+...
