@@ -6,6 +6,10 @@ cilium_version: 1.9.6
 # cilium helm repo
 cilium_helm_repo: "https://helm.cilium.io/"
 
+# cilium pod cidr range and cidr mask size to each node
+cilium_pod_cidr: "10.0.0.0/8"
+cilium_pod_mask: 24
+
 # load balancer mode: snat(default), dsr, hybrid
 cilium_lb_mode: "snat"
 

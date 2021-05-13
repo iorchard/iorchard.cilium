@@ -1,7 +1,17 @@
 ---
 kubeProxyReplacement: "strict"
-loadBalancer.algorithm: "{{ cilium_lb_algorithm }}"
-loadBalancer.mode: "{{ cilium_lb_mode }}"
+ipam:
+  operator:
+    clusterPoolIPv4PodCIDR: "{{ cilium_pod_cidr }}"
+    clusterPoolIPv4MaskSize: "{{ cilium_pod_mask }}"
+loadBalancer:
+  algorithm: "{{ cilium_lb_algorithm }}"
+  mode: "{{ cilium_lb_mode }}"
+{% if cilium_lb_mode == 'dsr' %}
+tunnel: "disabled"
+autoDirectNodeRoutes: true
+nativeRoutingCIDR: "{{ cilium_pod_cidr }}"
+{% endif %}
 k8sServiceHost: "{{ kube_apiserver_advertise_address }}"
 k8sServicePort: "{{ kube_apiserver_bind_port }}"
 ...

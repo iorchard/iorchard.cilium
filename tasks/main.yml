@@ -13,4 +13,10 @@
     chart_version: "{{ cilium_version }}"
     release_values: "{{ lookup('template', 'cilium_values.yml.j2') | from_yaml }}"
   when: inventory_hostname == groups['kube_controllers'][0]
+  register: ret
+
+- name: Cilium | Output cilium helm chart install command
+  ansible.builtin.debug:
+    msg: "{{ ret.command }}"
+  when: inventory_hostname == groups['kube_controllers'][0]
 ...
