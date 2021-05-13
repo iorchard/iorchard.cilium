@@ -3,6 +3,9 @@
 # cilium version to install
 cilium_version: 1.9.6
 
+# cilium helm repo
+cilium_helm_repo: "https://helm.cilium.io/"
+
 # load balancer mode: snat(default), dsr, hybrid
 cilium_lb_mode: "snat"
 
