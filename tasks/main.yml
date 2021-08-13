@@ -1,9 +1,27 @@
 ---
+- name: Main | import common tasks
+  ansible.builtin.import_tasks: "common.yml"
+
+- name: include os specific tasks
+  ansible.builtin.include_tasks: "{{ lookup('first_found', _params) }}"
+  vars:
+    _params:
+      files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_release | lower }}.yml"
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+      paths:
+        - "."
+
 - name: Cilium | Add cilium helm repository
   community.kubernetes.helm_repository:
     name: cilium
     repo_url: "{{ cilium_helm_repo }}"
-  when: inventory_hostname == groups['kube_controllers'][0]
+  delegate_to: "{{ groups['kube_controllers'][0] }}"
+  run_once: true
 
 - name: Cilium | Install cilium helm chart
   community.kubernetes.helm:
@@ -12,11 +30,13 @@
     chart_ref: "cilium/cilium"
     chart_version: "{{ cilium_version }}"
     release_values: "{{ lookup('template', 'cilium_values.yml.j2') | from_yaml }}"
-  when: inventory_hostname == groups['kube_controllers'][0]
   register: ret
+  delegate_to: "{{ groups['kube_controllers'][0] }}"
+  run_once: true
 
 - name: Cilium | Output cilium helm chart install command
   ansible.builtin.debug:
     msg: "{{ ret.command }}"
-  when: inventory_hostname == groups['kube_controllers'][0]
+  delegate_to: "{{ groups['kube_controllers'][0] }}"
+  run_once: true
 ...
